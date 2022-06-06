@@ -1,6 +1,11 @@
+# General imports
 import cv2
 import time
 import os
+
+# Selective imports
+from track_hand import TrackHand
+from pygame import mixer
 
 # Capture device settings
 cap_w, cap_h = 640, 640
@@ -22,8 +27,43 @@ for img_path in images:
 # FPS settings
 previous_time = 0
 
+# Sound settings
+mixer.init()
+mixer.music.load('./assets/ting.mp3')
+
+# Create instance of TrackHand
+detector = TrackHand(detection_confidence=0.8)
+
+# List of tips for every finger
+tip_ids = [4, 8, 12, 16, 20]
+
 while True:
     success, img = cap.read()
+
+    # Get image information
+    img = detector.find_hands(img)
+    landmarks = detector.find_position(img, draw=False)
+
+    if len(landmarks) != 0:
+        fingers = []
+
+        # Thumb
+        if landmarks[tip_ids[0]][1] < landmarks[tip_ids[0] - 1][1]:
+            fingers.append(1)
+            mixer.music.play()
+        else:
+            fingers.append(0)
+
+        # 4 fingers
+        for id in range(1, 5):
+            # Up means lower value
+            # Down means higher value
+            if landmarks[tip_ids[id]][2] < landmarks[tip_ids[id] - 2][2]:
+                fingers.append(1)
+            else:
+                fingers.append(0)
+
+        print(fingers)
 
     h, w, c = overlays[1].shape
     img[0:h, 0:w] = overlays[1]
