@@ -1,33 +1,34 @@
 # General imports
+import time
+
 import mediapipe as mp
 import numpy as np
+import pygame
 import cv2
 import uuid
 import os
 
 # Selective imports
-from pydub import AudioSegment
-from pydub.playback import play
-
-# Get sound
-sound = AudioSegment.from_mp3('./assets/ting.mp3')
+from pygame import mixer
 
 # Prepare things
 mp_drawing = mp.solutions.drawing_utils
 mp_hands = mp.solutions.hands
 
+# Sound configuration
+mixer.init()
+mixer.music.load('./assets/ting.mp3')
+mixer.music.set_volume(0.5)
+
 # Get video capture device
 cap = cv2.VideoCapture(0)
-
-# Create images folder
-os.mkdir('images')
 
 # Use Hands in the mp+hands variable with minimum tracking confidence of 50% and
 # Minimum detection confidence of 80% and name it as `hands`.
 with mp_hands.Hands(min_tracking_confidence=0.8, min_detection_confidence=0.5) as hands:
-
     while cap.isOpened():
         ret, frame = cap.read()
+        mixer.music.play()
 
         # BGR 2 RGB
         image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
@@ -49,9 +50,6 @@ with mp_hands.Hands(min_tracking_confidence=0.8, min_detection_confidence=0.5) a
             for num, hand in enumerate(results.multi_hand_landmarks):
                 mp_drawing.draw_landmarks(image, hand, mp_hands.HAND_CONNECTIONS)
 
-        # Save image
-        cv2.imwrite(os.path.join('images', '{}.jpg'.format(uuid.uuid1())), image)
-
         cv2.imshow('Hand Tracking', image)
 
         if cv2.waitKey(10) & 0xFF == ord('q'):
@@ -59,4 +57,3 @@ with mp_hands.Hands(min_tracking_confidence=0.8, min_detection_confidence=0.5) a
 
 cap.release()
 cv2.destroyAllWindows()
-
