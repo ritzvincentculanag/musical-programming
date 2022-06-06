@@ -63,7 +63,9 @@ while True:
             else:
                 fingers.append(0)
 
-        print(fingers)
+        total_fingers = fingers.count(1)
+        print(total_fingers)
+
 
     h, w, c = overlays[1].shape
     img[0:h, 0:w] = overlays[1]
