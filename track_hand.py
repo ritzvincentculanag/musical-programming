@@ -24,11 +24,13 @@ class TrackHand:
 
         # Create 'Hand' object
         self.hands = self.mp_hands.Hands(
-            self.mode,
-            self.max_hands,
-            self.detection_confidence,
-            self.track_confidence
+            static_image_mode=self.mode,
+            max_num_hands=self.max_hands,
+            min_detection_confidence=self.detection_confidence,
+            min_tracking_confidence=self.track_confidence
         )
+
+        self.results = None
 
     def find_hands(self, img, draw=True):
         # Flip img
@@ -38,12 +40,12 @@ class TrackHand:
         img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
         # Process img
-        results = self.hands.process(img_rgb)
+        self.results = self.hands.process(img_rgb)
 
         # Check if results contain multiple hands
-        if results.multi_hand_landmarks:
+        if self.results.multi_hand_landmarks:
             # Iterate over each hand landmarks
-            for hand_landmarks in results.multi_hand_landmarks:
+            for hand_landmarks in self.results.multi_hand_landmarks:
                 if draw:
                     self.mp_draw.draw_landmarks(
                         img,
@@ -51,18 +53,30 @@ class TrackHand:
                         self.mp_hands.HAND_CONNECTIONS,
                     )
 
-                # Get id and landmark
-                # for id, landmark in enumerate(hand_landmarks.landmark):
-                #     # Get height, width, and channel of img
-                #     h, w, c = img.shape
-                #
-                #     # Find position
-                #     cx, cy = int(landmark.x * w), int(landmark.y * h)
-                #
-                #     print(id, cx, cy)
+        return img
 
+    def find_position(self, img, hand_number=0, draw=True):
+        # Create landmark list
+        landmarks = []
 
+        # Check if results contain multiple hands
+        if self.results.multi_hand_landmarks:
+            # Get hand
+            hand = self.results.multi_hand_landmarks[hand_number]
 
+            # Get id and landmark
+            for id, landmark in enumerate(hand.landmark):
+                # Get height, width, and channel of img
+                h, w, c = img.shape
+
+                # Find and add position
+                cx, cy = int(landmark.x * w), int(landmark.y * h)
+                landmarks.append([id, cx, cy])
+
+                if draw:
+                    cv2.circle(img, (cx, cy), 5, (255, 0, 255), cv2.FILLED)
+
+        return landmarks
 
 
 def main():
@@ -73,8 +87,14 @@ def main():
     previous_time = 0
     current_time = 0
 
+    detector = TrackHand()
+
     while True:
         success, img = cap.read()
+        img = detector.find_hands(img)
+        landmarks = detector.find_position(img)
+        if len(landmarks) != 0:
+            print(landmarks[4])
 
         # Get FPS
         current_time = time.time()
