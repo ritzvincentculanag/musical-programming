@@ -27,9 +27,13 @@ for img_path in images:
 # FPS settings
 previous_time = 0
 
-# Sound settings
+# Load sounds
 mixer.init()
-mixer.music.load('./assets/ting.mp3')
+
+e = mixer.Sound('./assets/e.mp3')
+f = mixer.Sound('./assets/f.mp3')
+g = mixer.Sound('./assets/g.mp3')
+a = mixer.Sound('./assets/a.mp3')
 
 # Create instance of TrackHand
 detector = TrackHand(detection_confidence=0.8)
@@ -50,7 +54,6 @@ while True:
         # Thumb
         if landmarks[tip_ids[0]][1] < landmarks[tip_ids[0] - 1][1]:
             fingers.append(1)
-            mixer.music.play()
         else:
             fingers.append(0)
 
@@ -64,8 +67,14 @@ while True:
                 fingers.append(0)
 
         total_fingers = fingers.count(1)
-        print(total_fingers)
-
+        if total_fingers == 1:
+            c = mixer.Sound('./assets/c.mp3')
+            c.play()
+            c.stop()
+        elif total_fingers == 2:
+            d = mixer.Sound('./assets/d.mp3')
+            d.play()
+            d.stop()
 
     h, w, c = overlays[1].shape
     img[0:h, 0:w] = overlays[1]
