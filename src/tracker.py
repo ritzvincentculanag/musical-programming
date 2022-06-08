@@ -91,11 +91,11 @@ if __name__ == '__main__':
 
         if img_landmarks:
             # Finger tips
-            thumb = img_landmarks[4]
-            index = img_landmarks[8]
-            middle = img_landmarks[12]
-            ring = img_landmarks[16]
-            pinky = img_landmarks[20]
+            thumb_tip = img_landmarks[4]
+            index_tip = img_landmarks[8]
+            middle_tip = img_landmarks[12]
+            ring_tip = img_landmarks[16]
+            pinky_tip = img_landmarks[20]
 
             # Finger dips
             thumb_dip = img_landmarks[3]
@@ -105,11 +105,11 @@ if __name__ == '__main__':
             pinky_dip = img_landmarks[18]
 
             # Notes
-            c = thumb[1] < thumb_dip[1]
-            d = index[2] > index_dip[2]
-            e = middle[2] > middle_dip[2]
-            f = ring[2] > ring_dip[2]
-            g = pinky[2] > pinky_dip[2]
+            c = thumb_tip[1] < thumb_dip[1]
+            d = index_tip[2] > index_dip[2]
+            e = middle_tip[2] > middle_dip[2]
+            f = ring_tip[2] > ring_dip[2]
+            g = pinky_tip[2] > pinky_dip[2]
             a = d and e and f and g
 
             if a:
