@@ -79,7 +79,11 @@ if __name__ == '__main__':
 
     # Note sounds
     c_note = tracker.mixer.Sound('../assets/c.mp3')
-    d_note = tracker.mixer.Sound('../assets/e.mp3')
+    d_note = tracker.mixer.Sound('../assets/d.mp3')
+    e_note = tracker.mixer.Sound('../assets/e.mp3')
+    f_note = tracker.mixer.Sound('../assets/f.mp3')
+    g_note = tracker.mixer.Sound('../assets/g.mp3')
+    a_note = tracker.mixer.Sound('../assets/a.mp3')
 
     while True:
         img = tracker.track_hand()
@@ -106,12 +110,20 @@ if __name__ == '__main__':
             e = middle[2] > middle_dip[2]
             f = ring[2] > ring_dip[2]
             g = pinky[2] > pinky_dip[2]
-            a = d and f and g
+            a = d and e and f and g
 
-            if c:
-                c_note.play()
-            elif e:
+            if a:
+                a_note.play()
+            elif d:
                 d_note.play()
+            elif e:
+                e_note.play()
+            elif f:
+                f_note.play()
+            elif g:
+                g_note.play()
+            elif c:
+                c_note.play()
 
         cv.imshow('Tracker', cv.flip(img, 1))
         if cv.waitKey(10) & 0xFF == ord('q'):
