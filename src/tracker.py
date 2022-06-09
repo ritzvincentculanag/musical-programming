@@ -125,13 +125,22 @@ if __name__ == '__main__':
             ring_dip = img_landmarks[14]
             pinky_dip = img_landmarks[18]
 
+            # Gestures
+            thumb_down = thumb_tip[1] < thumb_dip[1]
+            index_down = index_tip[2] > index_dip[2]
+            middle_down = middle_tip[2] > middle_dip[2]
+            ring_down = ring_tip[2] > ring_dip[2]
+            pinky_down = pinky_tip[2] > pinky_dip[2]
+
             # Notes
-            c = thumb_tip[1] < thumb_dip[1]
-            d = index_tip[2] > index_dip[2]
-            e = middle_tip[2] > middle_dip[2]
-            f = ring_tip[2] > ring_dip[2]
-            g = pinky_tip[2] > pinky_dip[2]
-            a = d and e and f and g
+            c = thumb_down
+            d = index_down
+            e = middle_down
+            f = ring_down
+            g = pinky_down
+            a = index_down and middle_down and ring_down and pinky_down
+            b = index_down and middle_down and ring_down
+            c_h = middle_down and ring_down
 
             # Hand signs
             peace = c and f and g
